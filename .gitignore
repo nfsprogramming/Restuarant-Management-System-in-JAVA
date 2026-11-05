@@ -1,0 +1,36 @@
+# ── Java build output ──────────────────────────────────
+*.class
+*.jar
+*.war
+*.ear
+out/
+build/
+target/
+bin/
+
+# ── Runtime-generated files ────────────────────────────
+bill_*.txt
+sales_report.txt
+
+# ── IDE / Editor ───────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+*.project
+*.classpath
+.settings/
+nbproject/
+nb-configuration.xml
+
+# ── OS junk ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Secrets & env ──────────────────────────────────────
+.env
+*.env
+*.key
+*.keystore
+*.jks

@@ -50,3 +50,4 @@ sha256sum RestaurantMS.jar
 - All data is in-memory only — resets on exit (no persistence layer)
 - Single-threaded; one user session at a time
 - Plaintext demo passwords — not for production use
+

@@ -31,6 +31,8 @@ desktop.ini
 # ── Secrets & env ──────────────────────────────────────
 .env
 *.env
+.env.*
 *.key
 *.keystore
 *.jks
+

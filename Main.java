@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Main {
     private static AuthService authService = new AuthService();
@@ -356,20 +358,42 @@ public class Main {
 }
 
 class AuthService {
+    // Passwords are stored as SHA-256 hashes — no plaintext credentials in source.
+    // Demo credentials (for development only):
+    //   admin    → admin123
+    //   staff    → staff123
+    //   customer → customer123
+    private static final String HASH_ADMIN    = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+    private static final String HASH_STAFF    = "10176e7b7b24d317acfcf8d2064cfd2f24e154f7b5a96603077d5ef813d6a6b6";
+    private static final String HASH_CUSTOMER = "b041c0aeb35bb0fa4aa668ca5a920b590196fdaf9a00eb852c9b7f4d123cc6d6";
+
     private List<User> users;
     private User currentUser;
 
     public AuthService() {
         users = new ArrayList<>();
-        // Default users
-        users.add(new User(1, "admin", "admin123", Role.ADMIN));
-        users.add(new User(2, "staff", "staff123", Role.STAFF));
-        users.add(new User(3, "customer", "customer123", Role.CUSTOMER));
+        users.add(new User(1, "admin",    HASH_ADMIN,    Role.ADMIN));
+        users.add(new User(2, "staff",    HASH_STAFF,    Role.STAFF));
+        users.add(new User(3, "customer", HASH_CUSTOMER, Role.CUSTOMER));
+    }
+
+    /** SHA-256 hex digest; returns empty string on JVM misconfiguration (should never happen). */
+    private static String sha256(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = md.digest(input.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        }
     }
 
     public boolean login(String username, String password) {
+        String hashed = sha256(password);
         for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(hashed)) {
                 this.currentUser = user;
                 return true;
             }
